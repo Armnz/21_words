@@ -2,8 +2,8 @@
 Django settings for config project.
 """
 
-import os
 import logging
+import os
 from pathlib import Path
 
 import dj_database_url
@@ -12,18 +12,14 @@ import dj_database_url
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv(
-    "DJANGO_SECRET_KEY", "django-insecure-dev-key-change-in-production"
-)
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "django-insecure-dev-key-change-in-production")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # use "1"/"0" for clarity
 DEBUG = os.getenv("DJANGO_DEBUG", "1") in ("1", "True", "true")
 
 # hosts and CORS
-ALLOWED_HOSTS = (
-    os.getenv("ALLOWED_HOSTS", "*").split(",") if os.getenv("ALLOWED_HOSTS") else ["*"]
-)
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "*").split(",") if os.getenv("ALLOWED_HOSTS") else ["*"]
 
 # CORS settings
 ALLOWED_ORIGINS_ENV = os.getenv("ALLOWED_ORIGINS", "")
@@ -72,9 +68,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 # Database
 DATABASE_URL = os.getenv("DATABASE_URL")
 if DATABASE_URL:
-    DATABASES = {
-        "default": dj_database_url.parse(DATABASE_URL, conn_max_age=600)
-    }
+    DATABASES = {"default": dj_database_url.parse(DATABASE_URL, conn_max_age=600)}
 else:
     DATABASES = {
         "default": {
