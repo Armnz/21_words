@@ -31,8 +31,11 @@ if not CORS_ALLOWED_ORIGINS:
 
 # Application definition
 INSTALLED_APPS = [
+    "django.contrib.admin",
+    "django.contrib.sessions",
     "django.contrib.contenttypes",
     "django.contrib.auth",
+    "django.contrib.messages",
     "rest_framework",
     "corsheaders",
     "game",
@@ -43,6 +46,9 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
@@ -58,6 +64,7 @@ TEMPLATES = [
                 "django.template.context_processors.debug",
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
             ],
         },
     },

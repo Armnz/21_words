@@ -2,6 +2,7 @@
 URL Configuration for config project.
 """
 
+from django.contrib import admin
 from django.http import JsonResponse
 from django.urls import include, path
 
@@ -15,5 +16,6 @@ def root_view(request):
 
 urlpatterns = [
     path("", root_view, name="root"),
+    path("admin/", admin.site.urls),
     path("api/", include("game.api.urls")),
 ]

@@ -99,18 +99,55 @@ Environment variables available in `.env`:
 lv-wordrush-api/
 ├── manage.py                 # Django management script
 ├── config/                   # Django project config
-│   ├── settings.py          # Settings with logging, REST_FRAMEWORK config
-│   ├── urls.py              # Main URL router
+│   ├── settings.py          # Settings with logging, REST_FRAMEWORK, admin
+│   ├── urls.py              # Main URL router + admin
 │   └── wsgi.py              # WSGI application
 ├── game/                     # Main Django app
-│   ├── apps.py             # App configuration
+│   ├── models.py            # Game models (Word, Prompt, Session, LeaderboardEntry)
+│   ├── admin.py             # Django admin config
+│   ├── apps.py              # App configuration
 │   ├── api/
 │   │   ├── views.py        # API views (health check)
 │   │   └── urls.py         # API URL routes
+│   ├── services/
+│   │   └── validation.py   # Word normalization helper
+│   ├── migrations/          # Database migrations
 │   └── tests/
 │       └── test_health.py  # Tests for health endpoint
 ├── pyproject.toml           # uv, pytest, ruff configuration
 └── README.md               # This file
+```
+
+## Game Schema
+
+### Models
+
+The game uses a simplified schema optimized for the 21-word challenge:
+
+- **Word** – canonical word entries (normalized form only).
+- **Prompt** – game prompts with rule snapshots (e.g., "starts with A").
+- **Session** – game session state with frozen prompt and answer snapshots (JSONB) to preserve game state at play-time.
+- **LeaderboardEntry** – tied to submitted sessions, ranked by score (desc) then created_at (asc).
+
+### Migrations
+
+Apply migrations locally after pulling:
+
+```bash
+python manage.py migrate
+```
+
+In Docker, migrations are applied automatically during `docker compose up`.
+
+Verify tables exist (local):
+```bash
+python manage.py dbshell
+# then: \dt (PostgreSQL) or .tables (SQLite)
+```
+
+Or check via Django admin at http://localhost:8000/admin/ after creating a superuser:
+```bash
+python manage.py createsuperuser
 ```
 
 ## Configuration
@@ -135,9 +172,42 @@ python manage.py runserver
 
 All times are handled in UTC with timezone awareness enabled.
 
+## Docker Development Workflow
+
+1. **Copy environment file:**
+
+   ```bash
+   cp .env.example .env
+   ```
+
+2. **Start services:**
+
+   ```bash
+   docker compose -f docker-compose.dev.yml up --build
+   ```
+
+   The compose file will:
+   - Build the API image using the Dockerfile
+   - Start a Postgres 16 database
+   - Run `python manage.py migrate` inside the API container
+   - Start Django on `http://localhost:8000`
+
+3. **Access the application:**
+
+   - API health: http://localhost:8000/api/health/
+   - Django admin: http://localhost:8000/admin/
+
+4. **Stop services:**
+
+   ```bash
+   docker compose -f docker-compose.dev.yml down -v
+   ```
+
+   The `-v` flag removes the database volume; omit it to persist data.
+
 ## Next Steps
 
-- Add models and serializers for game logic
-- Add authentication when needed
-- Configure database (currently SQLite for development)
-- Add Docker support
+- Implement game endpoints (create session, submit answers, leaderboard)
+- Add serializers for API responses
+- Implement scoring logic
+- Add authentication/session management if needed
