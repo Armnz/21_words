@@ -57,6 +57,32 @@ ruff check --fix .
 ruff format .
 ```
 
+### Docker development
+
+An easy local environment is provided with Docker Compose.
+Copy `.env.example` to `.env` and adjust secrets as needed.
+
+Start services:
+
+```bash
+docker compose -f docker-compose.dev.yml up --build
+```
+
+Stop and remove containers/volumes:
+
+```bash
+docker compose -f docker-compose.dev.yml down -v
+```
+
+The API will be available at http://localhost:8000/ (health at `/api/health/`).
+
+Environment variables available in `.env`:
+
+- `DATABASE_URL` (postgres connection)
+- `DJANGO_SECRET_KEY` (secret key)
+- `DJANGO_DEBUG` (0 or 1)
+- `ALLOWED_ORIGINS` (comma-separated origins for CORS)
+
 ## Project Structure
 
 ```
