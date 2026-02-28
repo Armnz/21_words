@@ -3,7 +3,8 @@ version: '3.8'
 services:
   db:
     image: postgres:16
-    # no host port binding to avoid conflicts; only api talks to it via network
+    ports:
+      - "5432:5432"              # exposed so host tools (DBeaver, psql) can connect
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: pass

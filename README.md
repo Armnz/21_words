@@ -76,6 +76,16 @@ docker compose -f docker-compose.dev.yml down -v
 
 The API will be available at http://localhost:8000/ (health at `/api/health/`).
 
+Postgres is bound to the host on port **5432**, so you can point a client such as DBeaver to:
+
+```
+Host:     localhost          # or 127.0.0.1
+Port:     5432
+Database: wordrush
+User:     user
+Password: pass
+```
+
 Environment variables available in `.env`:
 
 - `DATABASE_URL` (postgres connection)
