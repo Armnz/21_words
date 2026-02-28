@@ -19,3 +19,9 @@ class HealthCheckTestCase(TestCase):
         """Test that health endpoint returns JSON content."""
         response = self.client.get("/api/health/")
         self.assertEqual(response["Content-Type"], "application/json")
+
+    def test_root_endpoint_redirects_or_ok(self):
+        """GET / should also return a simple ok JSON response."""
+        response = self.client.get("/")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json(), {"status": "ok"})

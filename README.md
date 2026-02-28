@@ -12,6 +12,14 @@ uv sync
 
 ### Run Development Server
 
+Before starting the server be sure to apply migrations (created by Django core apps):
+
+```bash
+python manage.py migrate
+```
+
+Then start the server:
+
 ```bash
 python manage.py runserver
 ```
@@ -20,6 +28,7 @@ Server runs on http://localhost:8000/
 
 ### API Endpoints
 
+- **GET /** - Root health check, returns `{"status": "ok"}`
 - **GET /api/health/** - Health check endpoint, returns `{"status": "ok"}`
 
 ## Development
