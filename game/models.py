@@ -5,8 +5,7 @@ from django.db import models
 
 class Word(models.Model):
     """
-    A canonical word entry.
-    Stores normalized word forms only (no diacritics variations).
+    A canonical dictionary word entry in normalized form.
     """
 
     id = models.BigAutoField(primary_key=True)
@@ -61,9 +60,7 @@ class Session(models.Model):
     time_left_ms = models.IntegerField(null=True, blank=True)  # time remaining when submitted
 
     # snapshot of 21 prompts and their rules captured at session start
-    prompts = models.JSONField(
-        default=dict
-    )  # dict keyed by ordinal or list of {prompt_id, description, rule, valid_words_count}
+    prompts = models.JSONField(default=list)
     # answers = list of successful words with scoring metadata
     answers = models.JSONField(default=list)
 

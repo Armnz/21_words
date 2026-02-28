@@ -1,5 +1,7 @@
 import unicodedata
 
+from django.db.models import Q
+
 
 def normalize_word(text: str) -> str:
     """
@@ -47,3 +49,35 @@ def matches_rule(normalized_word: str, rule: dict) -> bool:
         return any(ch in diacritics for ch in normalized_word)
 
     return False
+
+
+def rule_to_q(rule: dict) -> Q:
+    """
+    Convert a rule dict into a Django Q object that can be used to filter
+    `Word` objects by their `word` field. This allows counting matches in SQL.
+    Returns an empty Q() that matches nothing if the rule is invalid.
+    """
+    if not rule or "type" not in rule:
+        return Q(pk__in=[])  # matches nothing
+
+    typ = rule.get("type")
+    val = rule.get("value") or ""
+    if isinstance(val, str):
+        val = normalize_word(val)
+
+    if typ == "starts_with":
+        return Q(word__startswith=val)
+    if typ == "ends_with":
+        return Q(word__endswith=val)
+    if typ == "contains":
+        return Q(word__contains=val)
+    if typ == "contains_double":
+        return Q(word__contains=val)
+    if typ == "contains_diacritic":
+        diacritics = list("āčēģīķļņšūž")
+        q = Q(pk__in=[])
+        for ch in diacritics:
+            q = q | Q(word__contains=ch)
+        return q
+
+    return Q(pk__in=[])

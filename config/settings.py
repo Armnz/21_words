@@ -100,6 +100,13 @@ STATIC_URL = "/static/"
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 10,
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "21 Words API",
+    "DESCRIPTION": "Backend API for the 21 Words Latvian typing game.",
+    "VERSION": "1.0.0",
 }
 
 # Logging

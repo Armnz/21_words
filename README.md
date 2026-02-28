@@ -30,6 +30,13 @@ Server runs on http://localhost:8000/
 
 - **GET /** - Root health check, returns `{"status": "ok"}`
 - **GET /api/health/** - Health check endpoint, returns `{"status": "ok"}`
+- **POST /api/v1/sessions/** - Start a new 21-words session
+- **GET /api/v1/sessions/{id}/** - Get session state and current prompt
+- **POST /api/v1/sessions/{id}/attempt/** - Validate one word attempt and update score
+- **POST /api/v1/sessions/{id}/publish/** - Publish a submitted score to leaderboard
+- **GET /api/v1/leaderboard/?limit=100** - Read leaderboard
+- **GET /api/schema/** - OpenAPI schema JSON
+- **GET /api/docs/** - Swagger UI
 
 ## Development
 
@@ -207,7 +214,21 @@ All times are handled in UTC with timezone awareness enabled.
 
 ## Next Steps
 
-- Implement game endpoints (create session, submit answers, leaderboard)
-- Add serializers for API responses
-- Implement scoring logic
+- Add Tezaurs import pipeline for production-sized dictionary
+- Tune prompt set and balance by `valid_words_count`
+- Add frontend integration and contract type generation
 - Add authentication/session management if needed
+
+## OpenAPI schema generation
+
+Generate schema file:
+
+```bash
+python manage.py spectacular --file openapi/schema.json
+```
+
+With Docker:
+
+```bash
+docker compose -f docker-compose.dev.yml exec api python manage.py spectacular --file openapi/schema.json
+```

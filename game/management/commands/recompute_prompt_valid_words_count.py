@@ -4,7 +4,7 @@ import time
 from django.core.management.base import BaseCommand
 
 from game.models import Prompt, Word
-from game.services.validation import matches_rule
+from game.services.validation import rule_to_q
 
 logger = logging.getLogger(__name__)
 
@@ -18,11 +18,9 @@ class Command(BaseCommand):
         total_updated = 0
         for p in prompts:
             rule = p.rule or {}
-            count = 0
-            # iterate over words and count matches - reuse matches_rule
-            for w in Word.objects.values_list("word", flat=True):
-                if matches_rule(w, rule):
-                    count += 1
+            q = rule_to_q(rule)
+            # perform the count in SQL using Django ORM
+            count = Word.objects.filter(q).count()
             p.valid_words_count = count
             p.save(update_fields=["valid_words_count"])
             total_updated += 1
